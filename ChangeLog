@@ -1,0 +1,4 @@
+2013-10-01  darkestkhan  <darkestkhan@gmail.com>
+
+	* src/passgen.adb: Add handler for "help" argument.
+

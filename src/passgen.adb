@@ -18,14 +18,31 @@ pragma License (GPL);
 --    You should have received a copy of the GNU General Public License     --
 --   along with this program. If not, see <http://www.gnu.org/licenses/>.   --
 ------------------------------------------------------------------------------
+
+  ----------------------------------------------------------------------------
+  -- This program generates random alphanumeric passwords of specified      --
+  -- length.                                                                --
+  ----------------------------------------------------------------------------
+
 with Ada.Text_IO;
 with Ada.Numerics.Discrete_Random;
 with Ada.Command_Line;
+with Ada.Characters.Handling;
 procedure PassGen is
 
   package TIO renames Ada.Text_IO;
   package CLI renames Ada.Command_Line;
   package Random_Char is new Ada.Numerics.Discrete_Random (Character);
+
+  function To_Lower (Item: in String) return String
+  is
+    Result: String (Item'Range);
+  begin
+    for I in Item'Range loop
+      Result (I) := Ada.Characters.Handling.To_Lower (Item (I));
+    end loop;
+    return Result;
+  end To_Lower;
 
   Seed: Random_Char.Generator;
   Length: Positive := 20;
@@ -37,7 +54,13 @@ begin
     declare
       S: constant String := CLI.Argument (1);
     begin
-      Length := Positive'Value (S);
+      if To_Lower (S) = "help" then
+        TIO.Put_Line
+          ("This program generates random passwords of specified length.");
+        TIO.Put_Line ("Default length is 20 alphanumeric characters.");
+      else
+        Length := Positive'Value (S);
+      end if;
     end;
   end if;
 
@@ -46,7 +69,7 @@ begin
     C: Character;
   begin
     for I in Password'Range loop
-      <<Repeat>>
+      <<Repeat>> -- Used when generated character is not in correct range.
       C := Random_Char.Random (Seed);
       if C in 'a' .. 'z' or C in 'A' .. 'Z' or C in '0' .. '9' then
         Password (I) := C;
