@@ -9,7 +9,7 @@ project Passgen is
   for Main use ("passgen.adb");
 
   package Compiler is
-    CPU   := ("-m64", "-mssse3", "-march=native", "-fPIC");
+    CPU   := external ("CPU", "-m64 -mssse3 -march=native -fPIC");
     OPT   := ("-O3", "-fomit-frame-pointer");
     WARN  := ("-Wall");
 
